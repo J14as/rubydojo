@@ -95,7 +95,7 @@ module Rubydojo
           Your goal is to:
           1. Define a local variable `age` and set it to `25`.
           2. Define a constant `PLANET` and set it to `"Earth"`.
-          3. Define a method `greet(name)` that returns `"Hello, #{name}!"`. (Note: Ruby methods implicitly return the last evaluated expression!)
+          3. Define a method `greet(name)` that returns `"Hello, \#{name}!"`. (Note: Ruby methods implicitly return the last evaluated expression!)
         MARKDOWN
         code_template: <<~RUBY,
           # 1. Define local variable age below
