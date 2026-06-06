@@ -1,4 +1,4 @@
-module LearnRuby
+module Rubydojo
   module ApplicationHelper
   end
 end

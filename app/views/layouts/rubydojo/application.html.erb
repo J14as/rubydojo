@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LearnRuby | Interactive Ruby Roadmap & Playground</title>
+  <title>Rubydojo | Interactive Ruby Roadmap & Playground</title>
   <meta name="description" content="An interactive suite inside your Rails development environment designed to accelerate learning the Ruby language with structured roadmaps, live compilation, and exercises.">
   
   <%= csrf_meta_tags %>
@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-palenight.min.css">
 
   <!-- Engine Custom CSS -->
-  <%= stylesheet_link_tag "learn_ruby/application", media: "all" %>
+  <%= stylesheet_link_tag "rubydojo/application", media: "all" %>
   
   <%= yield :head %>
 </head>
@@ -33,7 +33,7 @@
         <polygon points="50,15 80,15 90,40 65,40" style="fill: rgba(0,0,0,0.15);" />
         <polygon points="35,40 65,40 50,85" style="fill: rgba(255,255,255,0.15);" />
       </svg>
-      <span>LearnRuby</span>
+      <span>Rubydojo</span>
     </a>
     
     <nav class="nav-links">
@@ -54,7 +54,7 @@
   <!-- Engine Custom JavaScript -->
   <script>
     // Global asset config or simple helpers if needed
-    window.LearnRuby = {};
+    window.Rubydojo = {};
   </script>
   
 </body>

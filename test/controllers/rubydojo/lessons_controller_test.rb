@@ -1,6 +1,6 @@
 require "test_helper"
 
-module LearnRuby
+module Rubydojo
   class LessonsControllerTest < ActionDispatch::IntegrationTest
     include Engine.routes.url_helpers
 

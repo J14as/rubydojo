@@ -1,4 +1,4 @@
-module LearnRuby
+module Rubydojo
   class Lesson
     attr_reader :id, :title, :level, :description, :explanation, :code_template, :validation_code, :hint
 

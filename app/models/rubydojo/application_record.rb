@@ -1,4 +1,4 @@
-module LearnRuby
+module Rubydojo
   class ApplicationRecord < ActiveRecord::Base
     self.abstract_class = true
   end

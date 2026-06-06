@@ -1,14 +1,11 @@
-# LearnRuby
-Short description and motivation.
-
-## Usage
-How to use my plugin.
+# RubyDojo
+An interactive Ruby learning roadmap and compiler playground for Rails developers.
 
 ## Installation
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "learn_ruby"
+gem "rubydojo", group: :development
 ```
 
 And then execute:
@@ -18,7 +15,7 @@ $ bundle
 
 Or install it yourself as:
 ```bash
-$ gem install learn_ruby
+$ gem install rubydojo
 ```
 
 ## Contributing

@@ -53,7 +53,7 @@
       <div id="terminal-body" class="terminal-body">
         <div class="terminal-line system">
           <span class="prompt-symbol">system ></span>
-          <span>Welcome to LearnRuby interactive terminal. Write code and hit Run.</span>
+          <span>Welcome to Rubydojo interactive terminal. Write code and hit Run.</span>
         </div>
       </div>
     </div>
@@ -68,7 +68,7 @@
         ✔ Validate Solution
       </button>
 
-      <% next_les = LearnRuby::Lesson.next_lesson(@lesson.id) %>
+      <% next_les = Rubydojo::Lesson.next_lesson(@lesson.id) %>
       <% if next_les %>
         <a id="btn-next" href="<%= lesson_path(next_les.id) %>" class="btn btn-success" style="display: <%= @is_completed ? 'inline-flex' : 'none' %>;">
           Next Lesson ➔

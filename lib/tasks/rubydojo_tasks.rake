@@ -1,4 +1,4 @@
 # desc "Explaining what the task does"
-# task :learn_ruby do
+# task :rubydojo do
 #   # Task goes here
 # end

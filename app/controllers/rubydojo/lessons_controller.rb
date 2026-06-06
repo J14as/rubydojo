@@ -1,4 +1,4 @@
-module LearnRuby
+module Rubydojo
   class LessonsController < ApplicationController
     before_action :find_lesson, only: [:show, :run, :validate]
 
@@ -48,7 +48,7 @@ module LearnRuby
     private
 
     def find_lesson
-      @lesson = LearnRuby::Lesson.find(params[:id])
+      @lesson = Rubydojo::Lesson.find(params[:id])
       unless @lesson
         redirect_to root_path, alert: "Lesson not found."
       end

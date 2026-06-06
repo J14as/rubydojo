@@ -1,4 +1,4 @@
-module LearnRuby
+module Rubydojo
   class ApplicationController < ActionController::Base
   end
 end

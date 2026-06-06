@@ -6,7 +6,7 @@ gem "json", "2.9.1"
 gem "stringio", "3.1.2"
 gem "psych", "5.3.1"
 
-# Specify your gem's dependencies in learn_ruby.gemspec.
+# Specify your gem's dependencies in rubydojo.gemspec.
 gemspec
 
 gem "puma"
