@@ -13,6 +13,12 @@ module Rubydojo
       assert_response :success
     end
 
+    test "should get stylesheet" do
+      get stylesheet_url
+      assert_response :success
+      assert_equal "text/css", response.media_type
+    end
+
     test "should get show lesson" do
       get lesson_url(id: "variables")
       assert_response :success
