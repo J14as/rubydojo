@@ -9,11 +9,9 @@ Gem::Specification.new do |spec|
   spec.summary     = "Interactive Ruby learning roadmap and compiler playground for Rails devs"
   spec.description = "A mountable Rails engine gem providing interactive Ruby lessons, a visual roadmap, code playground, and inline test validation."
   spec.license     = "MIT"
+  spec.required_ruby_version = ">= 3.1.0"
 
-  # Prevent pushing this gem to RubyGems.org.
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
-
-  spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/jayesh/rubydojo"
   spec.metadata["changelog_uri"] = "https://github.com/jayesh/rubydojo/blob/main/CHANGELOG.md"
 
@@ -21,5 +19,5 @@ Gem::Specification.new do |spec|
     Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   end
 
-  spec.add_dependency "rails", ">= 8.1.3"
+  spec.add_dependency "rails", "~> 8.1", ">= 8.1.3"
 end
