@@ -1,0 +1,220 @@
+<div class="lesson-layout">
+  <!-- Left Side: Instruction Pane -->
+  <div class="instruction-pane">
+    <a href="<%= root_path %>" class="back-link">
+      <span>←</span> Back to Roadmap
+    </a>
+
+    <!-- Raw Markdown content stored in a script tag for JS parsing -->
+    <script id="markdown-raw" type="text/markdown"><%= raw @lesson.explanation %></script>
+    
+    <!-- Rendered HTML goes here -->
+    <div id="markdown-viewer" class="markdown-content"></div>
+
+    <!-- Hint Box -->
+    <% if @lesson.hint.present? %>
+      <button id="btn-hint" class="btn btn-secondary" style="margin-top: 2rem; width: 100%;">
+        💡 Toggle Hint
+      </button>
+      <div id="hint-box" class="hint-box">
+        <strong>Hint:</strong> <%= @lesson.hint %>
+      </div>
+    <% end %>
+
+    <!-- Success banner if completed -->
+    <div id="success-banner" class="success-banner" style="display: <%= @is_completed ? 'flex' : 'none' %>;">
+      <span class="success-banner-icon">🎉</span>
+      <div>
+        <strong>Excellent Work!</strong> You've successfully completed this lesson.
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side: Code Editor and Terminal Console -->
+  <div class="workspace-pane">
+    <div class="pane-header">
+      <div class="pane-title">
+        <span>solution.rb</span>
+      </div>
+      <span class="node-badge" style="color: var(--color-primary);"><%= @lesson.level %></span>
+    </div>
+
+    <!-- Editor -->
+    <div class="editor-container">
+      <textarea id="code-editor"><%= @lesson.code_template %></textarea>
+    </div>
+
+    <!-- Simulated Terminal -->
+    <div class="terminal-container">
+      <div class="terminal-header">
+        <span>CONSOLE OUTPUT</span>
+        <span id="terminal-clear" style="cursor: pointer; hover: color: white;">Clear</span>
+      </div>
+      <div id="terminal-body" class="terminal-body">
+        <div class="terminal-line system">
+          <span class="prompt-symbol">system ></span>
+          <span>Welcome to LearnRuby interactive terminal. Write code and hit Run.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workspace Actions -->
+    <div class="workspace-actions">
+      <button id="btn-run" class="btn btn-secondary">
+        ▶ Run Code
+      </button>
+      
+      <button id="btn-validate" class="btn btn-primary">
+        ✔ Validate Solution
+      </button>
+
+      <% next_les = LearnRuby::Lesson.next_lesson(@lesson.id) %>
+      <% if next_les %>
+        <a id="btn-next" href="<%= lesson_path(next_les.id) %>" class="btn btn-success" style="display: <%= @is_completed ? 'inline-flex' : 'none' %>;">
+          Next Lesson ➔
+        </a>
+      <% else %>
+        <a id="btn-next" href="<%= root_path %>" class="btn btn-success" style="display: <%= @is_completed ? 'inline-flex' : 'none' %>;">
+          Roadmap Complete ➔
+        </a>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Load Marked.js from CDN for browser markdown parsing -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // 1. Render Markdown Explanation
+    const rawMarkdown = document.getElementById("markdown-raw").textContent;
+    document.getElementById("markdown-viewer").innerHTML = marked.parse(rawMarkdown);
+
+    // 2. Initialize CodeMirror Editor
+    const editorEl = document.getElementById("code-editor");
+    const editor = CodeMirror.fromTextArea(editorEl, {
+      mode: "ruby",
+      theme: "material-palenight",
+      lineNumbers: true,
+      tabSize: 2,
+      indentWithTabs: false,
+      smartIndent: true,
+      lineWrapping: true
+    });
+
+    // 3. Setup Terminal helpers
+    const terminalBody = document.getElementById("terminal-body");
+    
+    function writeToTerminal(content, type = 'output') {
+      const line = document.createElement("div");
+      line.className = `terminal-line ${type}`;
+      
+      const prompt = document.createElement("span");
+      prompt.className = "prompt-symbol";
+      prompt.textContent = type === 'system' ? "system >" : "ruby >";
+      
+      const text = document.createElement("span");
+      text.textContent = content;
+
+      line.appendChild(prompt);
+      line.appendChild(text);
+      terminalBody.appendChild(line);
+      
+      // Auto scroll terminal to bottom
+      terminalBody.scrollTop = terminalBody.scrollHeight;
+    }
+
+    document.getElementById("terminal-clear").addEventListener("click", () => {
+      terminalBody.innerHTML = '';
+      writeToTerminal("Console cleared.", "system");
+    });
+
+    // 4. Toggle Hint Box
+    const btnHint = document.getElementById("btn-hint");
+    if (btnHint) {
+      btnHint.addEventListener("click", () => {
+        const hintBox = document.getElementById("hint-box");
+        hintBox.classList.toggle("visible");
+      });
+    }
+
+    // 5. Run Code AJAX Action
+    const btnRun = document.getElementById("btn-run");
+    btnRun.addEventListener("click", function() {
+      const code = editor.getValue();
+      btnRun.disabled = true;
+      btnRun.innerHTML = `<span class="spinner"></span> Running...`;
+      
+      fetch("<%= run_lesson_path(@lesson.id) %>", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": "<%= form_authenticity_token %>"
+        },
+        body: JSON.stringify({ code: code })
+      })
+      .then(res => res.json())
+      .then(data => {
+        btnRun.disabled = false;
+        btnRun.textContent = "▶ Run Code";
+
+        if (data.stdout && data.stdout.trim() !== '') {
+          writeToTerminal(data.stdout, 'output');
+        }
+        
+        if (data.error) {
+          writeToTerminal(`Error: ${data.error}`, 'error');
+        } else {
+          writeToTerminal(`=> ${data.result}`, 'system');
+        }
+      })
+      .catch(err => {
+        btnRun.disabled = false;
+        btnRun.textContent = "▶ Run Code";
+        writeToTerminal("Network error while trying to run code.", "error");
+      });
+    });
+
+    // 6. Validate Code AJAX Action
+    const btnValidate = document.getElementById("btn-validate");
+    btnValidate.addEventListener("click", function() {
+      const code = editor.getValue();
+      btnValidate.disabled = true;
+      btnValidate.innerHTML = `<span class="spinner"></span> Validating...`;
+
+      fetch("<%= validate_lesson_path(@lesson.id) %>", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": "<%= form_authenticity_token %>"
+        },
+        body: JSON.stringify({ code: code })
+      })
+      .then(res => res.json())
+      .then(data => {
+        btnValidate.disabled = false;
+        btnValidate.textContent = "✔ Validate Solution";
+
+        if (data.stdout && data.stdout.trim() !== '') {
+          writeToTerminal(data.stdout, 'output');
+        }
+
+        if (data.success) {
+          writeToTerminal("✔ SUCCESS: All validation checks passed!", "success");
+          document.getElementById("success-banner").style.display = "flex";
+          document.getElementById("btn-next").style.display = "inline-flex";
+          // Trigger a subtle console success log
+          writeToTerminal("Nice job! Move on to the next lesson.", "system");
+        } else {
+          writeToTerminal(`❌ VALIDATION FAILED: ${data.error}`, 'error');
+        }
+      })
+      .catch(err => {
+        btnValidate.disabled = false;
+        btnValidate.textContent = "✔ Validate Solution";
+        writeToTerminal("Network error during validation.", "error");
+      });
+    });
+  });
+</script>

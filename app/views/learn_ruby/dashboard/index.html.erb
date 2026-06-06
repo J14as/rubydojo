@@ -1,0 +1,56 @@
+<div class="container animate-fade-in">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <h1 class="hero-title">Your Ruby Learning Roadmap</h1>
+    <p class="hero-subtitle">
+      Master Ruby fundamentals, dynamic programming, and Rails patterns step-by-step with interactive coding exercises.
+    </p>
+
+    <!-- Progress Tracker -->
+    <div class="progress-container">
+      <div class="progress-text">
+        <span>Roadmap Progress</span>
+        <strong><%= @completed_lessons.size %> / <%= @lessons.size %> Completed</strong>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width: <%= @progress_percent %>%;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Roadmap Path -->
+  <section class="roadmap-path">
+    <div class="roadmap-line"></div>
+
+    <% @lessons.each_with_index do |lesson, index| %>
+      <% is_done = @completed_lessons.include?(lesson.id.to_s) %>
+      <div class="roadmap-node <%= 'completed' if is_done %>" style="animation-delay: <%= index * 0.1 %>s">
+        <!-- Node Number Circle -->
+        <div class="node-circle">
+          <% if is_done %>
+            ✓
+          <% else %>
+            <%= index + 1 %>
+          <% end %>
+        </div>
+
+        <!-- Node Content Card -->
+        <div class="node-card <%= 'completed' if is_done %>">
+          <div class="node-badge"><%= lesson.level %></div>
+          <h2 class="node-title"><%= lesson.title %></h2>
+          <p class="node-description"><%= lesson.description %></p>
+          
+          <div class="node-footer">
+            <span class="node-status-text">
+              <span class="status-indicator <%= is_done ? 'completed' : 'pending' %>"></span>
+              <%= is_done ? 'Completed' : 'Not Started' %>
+            </span>
+            <a href="<%= lesson_path(lesson.id) %>" class="nav-btn <%= is_done ? 'secondary' : 'primary' %>">
+              <%= is_done ? 'Review Lesson' : 'Start Lesson' %>
+            </a>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </section>
+</div>
